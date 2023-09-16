@@ -2,9 +2,8 @@
 
 import Fluent
 import Foundation
-import Vapor
 
-final class DBProduct: Content, Model {
+final class DBProduct: Model {
   static let schema = "products"
 
   @ID(key: .id)

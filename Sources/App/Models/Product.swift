@@ -21,3 +21,19 @@ struct Product: Content {
 
   let isLiked: Bool
 }
+
+extension Product {
+  init?(_ product: DBProduct, imageURL: URL) {
+    guard let id = product.id?.uuidString else { return nil }
+
+    self.init(
+      id: id,
+      name: product.name,
+      price: product.price,
+      hexColor: product.hexColor,
+      image: .remote(imageURL),
+      availableSizes: product.availableSizes.sorted(),
+      isLiked: product.isLiked
+    )
+  }
+}

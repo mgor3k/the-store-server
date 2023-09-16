@@ -4,25 +4,15 @@ import FluentKit
 import Foundation
 import Vapor
 
+// TODO: Cleanup all of this
 struct ProductController: RouteCollection {
   func boot(routes: Vapor.RoutesBuilder) throws {
     routes.get("products") { request async throws -> [Product] in
       do {
         let query = try await DBProduct.query(on: request.db).all()
         let products = try query.compactMap { product -> Product? in
-          guard let id = product.id?.uuidString else { return nil }
-
-          let imageName = try request.imageURL(named: product.imageName)
-
-          return Product(
-            id: id,
-            name: product.name,
-            price: product.price,
-            hexColor: product.hexColor,
-            image: .remote(imageName),
-            availableSizes: product.availableSizes.sorted(),
-            isLiked: product.isLiked
-          )
+          let imageURL = try request.imageURL(named: product.imageName)
+          return Product(product, imageURL: imageURL)
         }
 
         return products
@@ -43,6 +33,13 @@ struct ProductController: RouteCollection {
 
       try await product.update(on: req.db)
 
+      let imageURL = try req.imageURL(named: product.imageName)
+
+      guard let product = Product(product, imageURL: imageURL) else {
+        struct CantCreateProductError: Error {}
+        throw CantCreateProductError()
+      }
+
       return product
     }
 
@@ -57,6 +54,13 @@ struct ProductController: RouteCollection {
       product.isLiked = false
 
       try await product.update(on: req.db)
+
+      let imageURL = try req.imageURL(named: product.imageName)
+
+      guard let product = Product(product, imageURL: imageURL) else {
+        struct CantCreateProductError: Error {}
+        throw CantCreateProductError()
+      }
 
       return product
     }
