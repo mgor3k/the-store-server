@@ -20,7 +20,7 @@ func mocks(_ app: Application) async throws {
     name: "Nike Air Pegasus",
     price: 250.40,
     hexColor: "#FFD9D8",
-    imageName: "nike1.png",
+    imageName: "nike2.png",
     availableSizes: [34, 35, 36, 37],
     isLiked: false
   )
