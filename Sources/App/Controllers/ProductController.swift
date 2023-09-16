@@ -31,7 +31,7 @@ struct ProductController: RouteCollection {
       }
     }
 
-    routes.post("products", ":id", "like") { req in
+    routes.put("products", ":id", "like") { req in
       let id = req.parameters.get("id")!
       let uuid = UUID(uuidString: id)!
 
@@ -40,6 +40,21 @@ struct ProductController: RouteCollection {
         .first()!
 
       product.isLiked = true
+
+      try await product.update(on: req.db)
+
+      return product
+    }
+
+    routes.put("products", ":id", "dislike") { req in
+      let id = req.parameters.get("id")!
+      let uuid = UUID(uuidString: id)!
+
+      let product = try await DBProduct.query(on: req.db)
+        .filter(\.$id == uuid)
+        .first()!
+
+      product.isLiked = false
 
       try await product.update(on: req.db)
 
