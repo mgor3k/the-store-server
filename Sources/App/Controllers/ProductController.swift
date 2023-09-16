@@ -19,7 +19,7 @@ struct ProductController: RouteCollection {
             price: product.price,
             hexColor: product.hexColor,
             image: .remote(imageName),
-            availableSizes: product.availableSizes,
+            availableSizes: product.availableSizes.sorted(),
             isLiked: product.isLiked
           )
         }
