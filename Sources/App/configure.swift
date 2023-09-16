@@ -10,6 +10,9 @@ public func configure(_ app: Application) async throws {
 
   app.migrations.add(CreateProductMigration())
 
+  // create mocks if needed
+  try await mocks(app)
+
   // register routes
   try routes(app)
 }
