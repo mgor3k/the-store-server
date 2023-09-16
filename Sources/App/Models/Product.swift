@@ -3,21 +3,21 @@
 import Foundation
 import Vapor
 
-public struct Product: Content {
-  public enum ImageType: Equatable, Hashable, Codable {
+struct Product: Content {
+  enum ImageType: Equatable, Hashable, Codable {
     case local(String)
     case remote(URL)
   }
 
-  public let id: String
-  public let name: String
+  let id: String
+  let name: String
 
-  public let price: Double
+  let price: Double
 
-  public let hexColor: String
-  public let image: ImageType
+  let hexColor: String
+  let image: ImageType
 
-  public let availableSizes: [Int]
+  let availableSizes: [Int]
 
-  public let isLiked: Bool
+  let isLiked: Bool
 }

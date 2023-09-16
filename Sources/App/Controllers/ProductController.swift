@@ -6,21 +6,28 @@ import Vapor
 struct ProductController: RouteCollection {
   func boot(routes: Vapor.RoutesBuilder) throws {
     routes.get("products") { request async throws -> [Product] in
-      let imageURL = try request.imageURL(named: "nike1.png")
+      do {
+        let query = try await request.db.query(DBProduct.self).all()
+        let products = try query.compactMap { product -> Product? in
+          guard let id = product.id?.uuidString else { return nil }
 
-      let products: [Product] = [
-        .init(
-          id: "1",
-          name: "Nike Air Pegasus",
-          price: 250.40,
-          hexColor: "#FFD9D8",
-          image: .remote(imageURL),
-          availableSizes: [34, 35, 36, 37],
-          isLiked: true
-        )
-      ]
+          let imageName = try request.imageURL(named: product.imageName)
 
-      return products
+          return Product(
+            id: id,
+            name: product.name,
+            price: product.price,
+            hexColor: product.hexColor,
+            image: .remote(imageName),
+            availableSizes: product.availableSizes,
+            isLiked: product.isLiked
+          )
+        }
+
+        return products
+      } catch {
+        return []
+      }
     }
   }
 }
