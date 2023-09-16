@@ -7,7 +7,7 @@ struct ProductController: RouteCollection {
   func boot(routes: Vapor.RoutesBuilder) throws {
     routes.get("products") { request async throws -> [Product] in
       do {
-        let query = try await request.db.query(DBProduct.self).all()
+        let query = try await DBProduct.query(on: request.db).all()
         let products = try query.compactMap { product -> Product? in
           guard let id = product.id?.uuidString else { return nil }
 
