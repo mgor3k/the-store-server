@@ -37,7 +37,8 @@ private extension Request {
     let hostname = application.http.server.configuration.hostname
     let port = application.http.server.configuration.port
     let baseURL = "http://\(hostname):\(port)/"
-    let imageURL = "\(baseURL)\(named)"
+    let imagePath = "images/"
+    let imageURL = baseURL + imagePath + named
 
     guard let url = URL(string: imageURL) else {
       struct InvalidURLError: Error {}
