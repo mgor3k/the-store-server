@@ -1,5 +1,6 @@
 //  Created by Maciej Gorecki on 16/09/2023.
 
+import FluentKit
 import Foundation
 import Vapor
 
@@ -28,6 +29,21 @@ struct ProductController: RouteCollection {
       } catch {
         return []
       }
+    }
+
+    routes.post("products", ":id", "like") { req in
+      let id = req.parameters.get("id")!
+      let uuid = UUID(uuidString: id)!
+
+      let product = try await DBProduct.query(on: req.db)
+        .filter(\.$id == uuid)
+        .first()!
+
+      product.isLiked = true
+
+      try await product.update(on: req.db)
+
+      return product
     }
   }
 }
