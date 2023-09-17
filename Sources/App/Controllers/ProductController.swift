@@ -10,11 +10,11 @@ struct ProductController: RouteCollection {
   }
 
   func boot(routes: Vapor.RoutesBuilder) throws {
-    routes.get("products") { request async throws -> [Product] in
+    routes.get("products") { req async throws -> [Product] in
       do {
-        let query = try await DBProduct.query(on: request.db).all()
+        let query = try await DBProduct.query(on: req.db).all()
         let products = try query.compactMap { product -> Product? in
-          let imageURL = try request.imageURL(named: product.imageName)
+          let imageURL = try req.imageURL(named: product.imageName)
           return Product(product, imageURL: imageURL)
         }
 
