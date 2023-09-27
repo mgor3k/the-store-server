@@ -8,7 +8,8 @@ public func configure(_ app: Application) async throws {
 
   app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
 
-  app.migrations.add(CreateProductMigration())
+  app.migrations.add(ProductMigration())
+  app.migrations.add(CartMigration())
 
   // register routes
   try routes(app)

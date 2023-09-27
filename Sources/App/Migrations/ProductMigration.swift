@@ -3,7 +3,7 @@
 import Fluent
 import Foundation
 
-struct CreateProductMigration: AsyncMigration {
+struct ProductMigration: AsyncMigration {
   func prepare(on database: Database) async throws {
     try await database.schema("products")
       .id()
