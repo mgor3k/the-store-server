@@ -13,7 +13,32 @@ struct CartController: RouteCollection {
     routes.get("cart") { req in
       let query = try await DBCartItem.query(on: req.db).all()
 
-      return query.count
+      var items: [CartItem] = []
+
+      for item in query {
+        guard let id = item.id, let uuid = UUID(uuidString: id) else { continue }
+
+        let product = try? await DBProduct
+          .query(on: req.db)
+          .filter(\.$id == uuid)
+          .first()
+
+        guard
+          let product,
+          let imageURL = try? req.imageURL(named: product.imageName),
+          let mappedProduct = Product(product, imageURL: imageURL) else {
+          continue
+        }
+
+        let item = CartItem(
+          product: mappedProduct,
+          quantity: item.quantity
+        )
+
+        items.append(item)
+      }
+
+      return items
     }
 
     routes.post("cart", ":id") { req in
